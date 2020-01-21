@@ -1,0 +1,29 @@
+{
+    "git.ignoreLimitWarning": true,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/develop-from-viet
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    "python.pythonPath": "C:\\Users\\iniad\\Miniconda3\\envs\\cs2018_data\\python.exe"
+=======
+    "python.pythonPath": "C:\\Users\\AnhNQ\\AppData\\Local\\Programs\\Python\\Python37\\python.exe"
+>>>>>>> qanh/myauth
+=======
+    "python.pythonPath": "C:\\Users\\AnhNQ\\AppData\\Local\\Programs\\Python\\Python37\\python.exe"
+=======
+    "python.pythonPath": "C:\\Users\\iniad\\Miniconda3\\envs\\cs2018_data\\python.exe"
+>>>>>>> origin/develop-from-viet
+<<<<<<< HEAD
+=======
+    "python.pythonPath": "env\\Scripts\\python.exe"
+>>>>>>> origin/vuong_chat_function
+=======
+>>>>>>> 27e8303383cd366b3db08a968f8af99ff9a74dec
+=======
+    "python.pythonPath": "env\\Scripts\\python.exe"
+>>>>>>> vuong_chat_function
+>>>>>>> origin/develop-from-viet
+}

@@ -1,0 +1,13 @@
+{% block body %}
+<div class="container">
+  <h1>Logged out</h1>
+  <p>
+    You have loggout out!
+  </p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit"><a href="{% url 'login' %}"></a>Login</button>
+  </form>
+</div>
+{% endblock %}

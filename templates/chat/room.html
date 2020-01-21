@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet' type='text/css'>
+    <script src="https://use.typekit.net/hoy3lrg.js"></script>
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+  </head>
+
+<body>
+  <div id="frame">
+    <div id="sidepanel">
+      <div class="left"><a href="{% url 'home' %}" style="font-size: 20px; color: white;"><i class="glyphicon glyphicon-home"></i></a></div>
+      <div id="profile">
+        <div class="wrap">
+          <img id="profile-img" src="{% static 'chat/assets/img/book.png' %}" class="online" alt="" />
+          <p style="font-size: 20px;">{{ user.username }}</p>
+          <div id="status-options">
+            <ul>
+              <li id="status-online" class="active"><span class="status-circle"></span> <p>Online</p></li>
+              <li id="status-away"><span class="status-circle"></span> <p>Away</p></li>
+              <li id="status-busy"><span class="status-circle"></span> <p>Busy</p></li>
+              <li id="status-offline"><span class="status-circle"></span> <p>Offline</p></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div id="search">
+        <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
+        <input type="text" placeholder="Search contacts..." />
+      </div>
+      <div id="contacts">
+        <ul>
+          {% for channel, opponent in dictionary.items %}
+          <!-- {% if customer in channel.participants.all %} -->
+          <li class="contact">
+            <div class="wrap">
+              <!-- <img src="http://emilcarlsson.se/assets/louislitt.png" alt="" /> -->
+              <div class="meta">
+                <a id="matched-user" class="name" href="{% url 'room' channel.link %}" style="font-size: 18px;"><img src="{% static 'chat/assets/img/book-open.png' %}" width="45" height="45">{{ opponent.user.username }}</a>
+                <!-- <p id="channel-link" class="preview"></p> -->
+              </div>
+            </div>
+          </li>
+
+          <!-- {% endif %} -->
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="content">
+      <div class="contact-profile">
+        <img src="{% static 'chat/assets/img/book-open.png' %}" alt="" />
+        <p style="font-size: 20px;">{{ matched_customer.user.username }}</p>
+      </div>
+      <div class="messages">
+        <ul id="chat-log">
+
+        </ul>
+      </div>
+      <div class="message-input">
+        <div class="wrap">
+          <input id="chat-message-input" type="text" placeholder="Write your message..." /> 
+          <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+          <button id="chat-message-submit" class="submit">
+            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+<script src="{% static 'main.js' %}"></script>
+<script src="{% static 'reconnecting-websocket.js' %}"></script>
+<script>
+    var channelLink = {{ channel_link_json }};
+    var username = "{{ user.username }}";
+
+    var chatSocket = new ReconnectingWebSocket(
+        'ws://' + window.location.host +
+        '/ws/c/' + channelLink + '/');
+    chatSocket.onopen = function(e) {
+      fetchMessages(channelLink);
+    }
+    chatSocket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        if (data['command'] === 'messages') {
+          for (let i=0; i<data['messages'].length; i++) {
+            createMessage(data['messages'][i]);
+          }
+        } else if (data['command'] === 'new_message'){
+          createMessage(data['message']);
+        }
+    };
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        var messageInputDom = document.getElementById('chat-message-input');
+        var message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'command': 'new_message',
+            'message': message,
+            'from': username,
+            'channel': channelLink,
+        }));
+        messageInputDom.value = '';
+    };
+    function fetchMessages(channelLink) {
+      chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'room_link': channelLink}));
+    }
+    function createMessage(data) {
+      var author = data['author'];
+      var msgListTag = document.createElement('li');
+      var imgTag = document.createElement('img');
+      var pTag = document.createElement('p');
+      pTag.textContent = data.content;
+      
+      
+      if (author === username) {
+        msgListTag.className = 'sent';
+        imgTag.src = "{% static 'chat/assets/img/book.png' %}";
+      } else {
+        msgListTag.className = 'replies';
+        imgTag.src = "{% static 'chat/assets/img/book-open.png' %}";
+      }
+      msgListTag.appendChild(imgTag);
+      msgListTag.appendChild(pTag);
+      document.querySelector('#chat-log').appendChild(msgListTag);
+    }
+
+</script>
+</body>
+
+</html>

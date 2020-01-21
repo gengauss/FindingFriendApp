@@ -1,0 +1,83 @@
+<!-- {% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        .navbar-custom {
+            background-color: #6900EE;
+        }
+/* change the brand and text color */
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-text {
+            color: rgba(255,255,255,.8);
+        }
+/* change the link color */
+        .navbar-custom .navbar-nav .nav-link {
+            color: rgba(255,255,255,.5);
+        }
+/* change the color of active or hovered links */
+        .navbar-custom .nav-item.active .nav-link,
+        .navbar-custom .nav-item:hover .nav-link {
+            color: #ffbbbc;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-custom">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'home' %}">FindingFriendApp</a>
+            </div>
+            <ul class="nav navbar-nav">
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'match' %}">Match</a></li>
+                {% endif %}
+                <li><a href="{% url 'chat' %}">Chat</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <div>
+                    {% if user.is_authenticated %}
+                    <button type="button" class="btn btn-warning">
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </button>
+                    {% else %}
+                    <button type="button" class="btn btn-success">
+                        <a href="{% url 'login' %}">Login</a>
+                    </button>
+                    <button type="button" class="btn btn-danger">
+                        <a href="{% url 'register' %}">Register</a>
+                    </button>
+                    {% endif %}
+                </div>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        {% block content %}
+        {% if messages %}
+        {% for message in messages %}
+        {{message}}
+        {% endfor %}
+        {% endif %}
+        {% endblock %}
+    </div>
+</body>
+
+</html>
+<style>
+    a {
+        color: inherit;
+    }
+</style> -->
